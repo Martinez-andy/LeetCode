@@ -1,4 +1,9 @@
 class Solution:
+    # Optimized solution:
+    
+    
+    
+    # Initial Solution. Works but conditions could be cleaner
     def generate(self, numRows: int) -> List[List[int]]:
         res = [[1]]
         if numRows == 1:
