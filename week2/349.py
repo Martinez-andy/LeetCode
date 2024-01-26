@@ -31,3 +31,16 @@ class Solution:
         for char in s:
             res += ord(char) - ord('a') + 1
         return res
+    
+# Using bit manipulation
+class Solution:
+    def findTheDifference(self, s: str, t: str) -> str:
+        res = 0
+
+        for c in s:
+            res = res ^ ord(c)
+        for c in t:
+            res = res ^ ord(c)
+        return chr(res)
+    
+# XOR is amazing when you are looking for differences/unique values
