@@ -18,3 +18,16 @@ class Solution:
         set2 = set(nums2)
 
         return list(set1 & set2)
+    
+# Using sum method
+
+class Solution:
+    def findTheDifference(self, s: str, t: str) -> str:
+        s, t = self.strSum(s), self.strSum(t)
+        return chr(t - s + ord('a') - 1)
+    
+    def strSum(self, s: str) -> int:
+        res = 0
+        for char in s:
+            res += ord(char) - ord('a') + 1
+        return res
