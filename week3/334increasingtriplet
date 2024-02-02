@@ -1,0 +1,29 @@
+class Solution:
+    def increasingTriplet(self, nums: List[int]) -> bool:
+        """
+        Important Notes:
+            - We need a subsequence, not a subarray
+            [1, 2, 3, 4, 5] -> [1, 3, 5]
+
+            - What is the question REALLY asking?
+            is there an ascennding subsequence of length at least 3
+        """
+        s1 = s2 = float("inf")
+        
+        for num in nums:
+            if num <= s1: # Checks if a first number exists, continously decreasing
+                s1 = num
+            elif num <= s2:
+                s2 = num
+            else:
+                return True
+        return False
+    
+"""
+    Notes:
+        - Subsequnce allows you to be very relaxed with your conditionals
+        - Remeber if they want a True/False instead of an example you can be way more lax
+            - Only return a boolean and don't bother looking for a specific example
+            - Instead, find conditions that must be true if one exmaple exists
+        - Remember to reduce summarize the problem and figure out what they are really asking.
+"""
