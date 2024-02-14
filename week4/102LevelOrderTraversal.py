@@ -48,10 +48,13 @@ class Solution:
 
 """
     COULD ALSO SOLVE USING A SINGLE QUEUE
+    IF WE CALCULATE THE LIST OF THE QUEUE
+    AT THE START OF THE WHILE LOOP
 """
 
 """
     Notes:
         When we want to execute in order traversal of a BT we want to use BFS.
         BFS is implemented with a queue and DFS is implemented with a stack.
+        BFS runs in linear time with respect to the number of nodes and edges.
 """
