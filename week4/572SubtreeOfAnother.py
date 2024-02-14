@@ -29,4 +29,10 @@ class Solution:
         structure rather than comparing using ==.
 
         Maybe use DFS or BFS?
+        
+    Solution notes:
+        Trees cannot be compared by value, thus we need a helper function called sameTree.
+        Solution essentially runs DFS on the main tree and runs sameTree for all the nodes.
+        If subRoot is a subtree of the root tree then eventually this will return True. Thus,
+        we use boolean logic ORs instead of boolean logic ANDs
 """
