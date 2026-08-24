@@ -2,17 +2,17 @@
 
 GOOGLE-FOCUSED ROADMAP
 
-For your Google objective, I’d expand in this order:
 
-1. Trees / BSTs — very high value, and you’ve done a lot before, so this is probably your easiest category to reactivate.
-2. Heaps / Priority Queues — especially because you just touched Dijkstra. Know top-K, k-way merging, running minimum/maximum style problems.
-3. Binary Search — including “binary search on the answer,” not just searching a sorted array.
-4. Stacks / Queues — monotonic stack, parentheses, simulation.
-5. Backtracking / Recursion — subsets, permutations, combinations, word-search-style problems.
-6. Dynamic Programming — 1D first, then 2D. You already have some background here, so focus on recognizing state/transition rather than grinding dozens.
-7. Greedy — intervals, jump-game-type reasoning, scheduling.
-8. Union-Find / Tries — useful secondary graph/string structures.
-9. Bit manipulation — lower priority, but know the basics.
+python3 leetcode.py learn google_oa
+
+
+python3 leetcode.py redo google_oa_repeat
+
+
+python3 leetcode.py redo google_oa
+
+
+
 
 
 Do not. postpone graphs until every exotic DP track is finished Interleave the
@@ -46,6 +46,7 @@ Suggested daily mix while finishing DP:
 
 Broad category aliases are supported. Examples:
   python3 leetcode.py learn google_oa      # 50/25/25 OA roadmap (A/A/G/O)
+  python3 leetcode.py redo google_oa_repeat  # due reviews from the OA repeat set
   python3 leetcode.py learn dp             # next fresh problem in DP roadmap
   python3 leetcode.py practice dp          # any DP track
   python3 leetcode.py redo graph           # any due graph review
@@ -511,6 +512,39 @@ PROBLEMS = [
 # fresh Medium variations of core patterns. These are not a leaked question
 # list; they are transferable representatives of repeatedly reported skills.
 PROBLEMS += [
+    (523, "Continuous Subarray Sum", ("array", "prefix", "hash_map")),
+    (974, "Subarray Sums Divisible by K", ("array", "prefix", "hash_map")),
+    (1248, "Count Number of Nice Subarrays",
+     ("array", "sliding_window", "prefix", "hash_map")),
+    (1524, "Number of Sub-arrays With Odd Sum", ("array", "prefix")),
+    (187, "Repeated DNA Sequences", ("string", "sliding_window", "hash_set")),
+    (299, "Bulls and Cows", ("string", "hash_map")),
+    (811, "Subdomain Visit Count", ("string", "hash_map")),
+    (953, "Verifying an Alien Dictionary", ("string", "hash_map")),
+    (1657, "Determine if Two Strings Are Close",
+     ("string", "hash_map", "sorting")),
+    (2352, "Equal Row and Column Pairs", ("matrix", "hash_map")),
+    (1208, "Get Equal Substrings Within Budget", ("string", "sliding_window")),
+    (1456, "Maximum Number of Vowels in a Substring of Given Length",
+     ("string", "sliding_window")),
+    (1493, "Longest Subarray of 1's After Deleting One Element",
+     ("array", "sliding_window")),
+    (1838, "Frequency of the Most Frequent Element",
+     ("array", "sorting", "sliding_window")),
+    (2024, "Maximize the Confusion of an Exam", ("string", "sliding_window")),
+    (2461, "Maximum Sum of Distinct Subarrays With Length K",
+     ("array", "sliding_window", "hash_set")),
+    (75, "Sort Colors", ("array", "two_pointers", "sorting")),
+    (680, "Valid Palindrome II", ("string", "two_pointers", "greedy")),
+    (844, "Backspace String Compare", ("string", "two_pointers", "stack")),
+    (977, "Squares of a Sorted Array", ("array", "two_pointers")),
+    (289, "Game of Life", ("matrix", "simulation")),
+    (498, "Diagonal Traverse", ("matrix", "simulation")),
+    (1572, "Matrix Diagonal Sum", ("matrix", "simulation")),
+    (8, "String to Integer (atoi)", ("string", "parsing", "simulation")),
+    (43, "Multiply Strings", ("string", "math", "simulation")),
+    (415, "Add Strings", ("string", "math", "simulation")),
+    (468, "Validate IP Address", ("string", "parsing", "simulation")),
     (930, "Binary Subarrays With Sum", ("array", "prefix", "hash_map")),
     (1658, "Minimum Operations to Reduce X to Zero",
      ("array", "sliding_window", "prefix")),
@@ -572,8 +606,9 @@ PROBLEMS += [
 
 # Google OA is deliberately narrower than the general interview curriculum.
 # Each four-problem cycle is A, A, G, O: two array/string representatives, one
-# graph representative, and one breadth problem. Historical attempts remain
-# eligible as cold reactivation; recent evidence is skipped by `learn`.
+# graph representative, and one breadth problem. GOOGLE_OA contains only IDs
+# absent from the progress JSON; worthwhile historical problems live in the
+# separate GOOGLE_OA_REPEAT review track.
 GOOGLE_OA_ARRAY_STRING_TRACKS = [
     "hashing", "two_pointers", "string_manipulation", "sliding_window",
     "prefix_accumulation", "prefix_sum_hashmap", "matrix_simulation",
@@ -581,7 +616,7 @@ GOOGLE_OA_ARRAY_STRING_TRACKS = [
 GOOGLE_OA_GRAPH_TRACKS = [
     "graph_modeling", "topological_sort", "bfs_shortest_path",
     "dfs_flood_fill", "multi_source_bfs", "bipartite_graph", "union_find",
-    "dijkstra", "state_space_search",
+    "dijkstra", "bounded_shortest_path", "state_space_search",
 ]
 GOOGLE_OA_OTHER_TRACKS = [
     "binary_search_answer", "heap_top_k", "heap_scheduling", "intervals",
@@ -597,41 +632,53 @@ GOOGLE_OA_BUCKETS = {
 GOOGLE_OA_WEIGHTS = {"arrays_strings": 0.50, "graphs": 0.25, "other": 0.25}
 
 GOOGLE_OA = [
-    # Cycles 1-4: highest-value recognition and transformations.
-    560, 904, 207, 875,
-    76, 930, 133, 973,
-    713, 1658, 785, 56,
-    525, 567, 815, 215,
+    # Cycles 1-4: core window/prefix recognition and graph modeling.
+    930, 76, 207, 1891,
+    713, 1658, 133, 1011,
+    523, 974, 785, 703,
+    1248, 1208, 815, 692,
 
-    # Cycles 5-8: stale alternatives replace very recent 41, 438, and 3.
-    128, 238, 934, 1891,
-    424, 49, 684, 621,
-    16, 15, 743, 39,
-    380, 242, 127, 322,
+    # Cycles 5-8: fixed/variable windows, shortest paths, and scheduling.
+    1456, 1493, 934, 621,
+    2024, 2461, 684, 1834,
+    187, 299, 743, 1353,
+    811, 953, 127, 986,
 
-    # Cycles 9-12: later core OA material.
-    11, 283, 210, 1011,
-    36, 48, 542, 739,
-    54, 73, 752, 253,
-    303, 724, 886, 435,
+    # Cycles 9-12: hashing, two pointers, state search, and intervals/stacks.
+    1657, 2352, 210, 253,
+    75, 680, 542, 435,
+    844, 977, 752, 452,
+    289, 498, 886, 907,
 
-    # Cycles 13-16: breadth without drifting into exotic algorithms.
-    217, 125, 547, 55,
-    205, 14, 721, 1353,
-    151, 443, 1129, 1834,
-    271, 209, 1162, 692,
+    # Cycles 13-16: parsing/simulation plus representative backtracking and DP.
+    8, 43, 547, 79,
+    415, 468, 721, 90,
+    1524, 1838, 1129, 91,
+    48, 73, 1162, 322,
+
+    # Cycle 17 plus the closest possible 70-item allocation (35/18/17).
+    528, 437, 399, 416,
+    1572, 787,
+]
+
+GOOGLE_OA_REPEAT = [
+    560, 904, 875, 973, 56, 525, 567, 215, 128, 238, 424, 49,
+    16, 15, 39, 380, 242, 11, 283, 36, 739, 54, 303, 724, 102,
+    217, 125, 55, 205, 14, 151, 443, 271, 209, 167, 287, 20, 42,
 ]
 
 
 # Ordered tracks are the heart of the trainer. Each list moves from the cleanest
 # version of a pattern to variants that force deeper recognition.
 TRACKS = {
-    "hashing": [1, 217, 242, 205, 49, 128, 380, 41],
-    "two_pointers": [125, 167, 283, 11, 15, 16, 287, 42],
-    "string_manipulation": [14, 151, 443, 271],
-    "sliding_window": [209, 3, 1004, 904, 713, 1658, 424, 438, 567, 76],
+    "hashing": [1, 217, 242, 205, 299, 811, 953, 1657, 2352,
+                49, 128, 380, 41],
+    "two_pointers": [125, 167, 283, 75, 680, 844, 977, 11, 15, 16, 287, 42],
+    "string_manipulation": [14, 151, 443, 271, 8, 43, 415, 468],
+    "sliding_window": [209, 3, 1004, 904, 187, 713, 1208, 1248, 1456,
+                       1493, 1658, 1838, 2024, 2461, 424, 438, 567, 76],
     "prefix_accumulation": [238, 303, 724, 528],
-    "prefix_sum_hashmap": [560, 930, 525, 437],
+    "prefix_sum_hashmap": [560, 930, 523, 974, 1248, 1524, 525, 437],
     "stack": [20, 150, 155, 1249],
     "monotonic_stack": [739, 853, 84, 907],
     "expression_stack": [394, 636, 224],
@@ -666,7 +713,7 @@ TRACKS = {
     "geometry": [149],
     "greedy": [53, 121, 122, 169, 55, 45, 334, 1353, 435, 134, 621, 767],
     "bit_manipulation": [136, 191, 190, 268, 338, 371, 421],
-    "matrix_simulation": [36, 48, 54, 73],
+    "matrix_simulation": [36, 48, 54, 73, 289, 498, 1572],
     "dp_linear_take_skip": [70, 746, 198, 213, 740, 91],
     "dp_grid": [118, 119, 62, 64, 63, 120, 221],
     "dp_two_sequence": [392, 1143, 1035, 583, 712, 72, 115],
@@ -679,6 +726,7 @@ TRACKS = {
     "sweep_line_ordered_intervals": [986, 1094, 253, 729, 218],
     "google_priority_additions": [1631, 317, 827, 126, 253, 362, 1095, 149, 332, 1136],
     "google_oa": GOOGLE_OA,
+    "google_oa_repeat": GOOGLE_OA_REPEAT,
     "google_core": [
         200, 133, 994, 1091, 934, 815, 785, 207, 210, 684, 721, 743,
         1631, 752, 127,
@@ -691,7 +739,10 @@ TRACKS = {
 
 # Aggregate priority lists are selectable, but should not make every contained
 # family count as "begun" for the no-argument random mode.
-META_TRACKS = {"google_core", "google_priority_additions", "google_oa"}
+META_TRACKS = {
+    "google_core", "google_priority_additions", "google_oa",
+    "google_oa_repeat",
+}
 
 # Broad aliases preserve the narrow pattern taxonomy while making it convenient
 # to train a family. Order matters for `learn <group>` and acts as its roadmap.
@@ -760,7 +811,8 @@ REDO_WEIGHTS = {
 EASY_IDS = {
     1, 20, 21, 53, 69, 70, 83, 94, 100, 101, 104, 110, 112, 118,
     119, 121, 125, 136, 141, 169, 190, 191, 205, 206, 217, 226, 242,
-    268, 283, 303, 338, 359, 392, 543, 572, 637, 700, 704, 724, 746, 1046,
+    268, 283, 303, 338, 359, 392, 415, 543, 572, 637, 680, 700, 704,
+    724, 746, 844, 953, 977, 1046, 1572,
 }
 HARD_IDS = {
     4, 23, 25, 42, 51, 72, 76, 84, 115, 124, 126, 127, 149, 188,
@@ -876,20 +928,13 @@ def learn(pattern):
 
     Any real attempt removes a problem from LEARN. HINTED attempts are revisited
     later by REDO instead of blocking access to new variations in the track.
-    Google OA learning additionally treats stale historical attempts as cold
-    reactivation candidates, while recent HINTED/SOLVED/MASTERED evidence skips
-    the problem. REDO scheduling remains independent of the OA bucket ratio.
+    Google OA contains only new problems; its historical review set is handled
+    separately through `redo google_oa_repeat`.
     """
     tracks = _resolve_category(pattern)
     if not tracks:
         return _unknown_pattern(pattern)
     state = _load()
-    if pattern == "google_oa":
-        for lc in GOOGLE_OA:
-            if _entry(state, lc)["status"] in (UNSEEN, PAST_ATTEMPTED):
-                return format_problem(BY_ID[lc])
-        return ("google_oa: ordered learning and cold-reactivation queue "
-                "complete. Use practice or redo for additional reps.")
     for track in tracks:
         for lc in TRACKS[track]:
             status = _entry(state, lc)["status"]
