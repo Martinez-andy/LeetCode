@@ -2,6 +2,19 @@
 
 GOOGLE-FOCUSED ROADMAP
 
+For your Google objective, I’d expand in this order:
+
+1. Trees / BSTs — very high value, and you’ve done a lot before, so this is probably your easiest category to reactivate.
+2. Heaps / Priority Queues — especially because you just touched Dijkstra. Know top-K, k-way merging, running minimum/maximum style problems.
+3. Binary Search — including “binary search on the answer,” not just searching a sorted array.
+4. Stacks / Queues — monotonic stack, parentheses, simulation.
+5. Backtracking / Recursion — subsets, permutations, combinations, word-search-style problems.
+6. Dynamic Programming — 1D first, then 2D. You already have some background here, so focus on recognizing state/transition rather than grinding dozens.
+7. Greedy — intervals, jump-game-type reasoning, scheduling.
+8. Union-Find / Tries — useful secondary graph/string structures.
+9. Bit manipulation — lower priority, but know the basics.
+
+
 Do not. postpone graphs until every exotic DP track is finished Interleave the
 four foundational DP families with core graph traversal/modeling immediately.
 
@@ -32,6 +45,7 @@ Suggested daily mix while finishing DP:
   python3 leetcode.py random dp graph tree arrays_strings
 
 Broad category aliases are supported. Examples:
+  python3 leetcode.py learn google_oa      # 50/25/25 OA roadmap (A/A/G/O)
   python3 leetcode.py learn dp             # next fresh problem in DP roadmap
   python3 leetcode.py practice dp          # any DP track
   python3 leetcode.py redo graph           # any due graph review
@@ -88,7 +102,7 @@ PROBLEMS = [
     (128, "Longest Consecutive Sequence", ("array", "hash_set")),
     (169, "Majority Element", ("array",)),
     (217, "Contains Duplicate", ("array", "hash_set")),
-    (238, "Product of Array Except Self", ("array", "prefix")),
+    (238, "Product of Array Except Self", ("array", "prefix_suffix")),
     (347, "Top K Frequent Elements", ("array", "hash_map", "heap")),
     (380, "Insert Delete GetRandom O(1)", ("hash_map", "design")),
     (560, "Subarray Sum Equals K", ("array", "prefix", "hash_map")),
@@ -220,8 +234,6 @@ PROBLEMS = [
 
     (215, "Kth Largest Element in an Array", ("heap", "quickselect")),
     (295, "Find Median from Data Stream", ("heap", "design", "hard")),
-    (347, "Top K Frequent Elements", ("heap", "hash_map")),
-    (621, "Task Scheduler", ("heap", "greedy")),
     (703, "Kth Largest Element in a Stream", ("heap", "design")),
     (767, "Reorganize String", ("heap", "greedy")),
     (973, "K Closest Points to Origin", ("heap",)),
@@ -334,7 +346,8 @@ PROBLEMS = [
 
     (399, "Evaluate Division", ("graph", "weighted_graph")),
     (743, "Network Delay Time", ("graph", "dijkstra")),
-    (787, "Cheapest Flights Within K Stops", ("graph", "shortest_path")),
+    (787, "Cheapest Flights Within K Stops",
+     ("graph", "bounded_shortest_path", "state_search")),
 
 
     # ========================================================
@@ -490,11 +503,6 @@ PROBLEMS = [
     # DESIGN
     # ========================================================
 
-    (146, "LRU Cache", ("design", "hash_map", "linked_list")),
-    (155, "Min Stack", ("design", "stack")),
-    (208, "Implement Trie", ("design", "trie")),
-    (295, "Find Median from Data Stream", ("design", "heap")),
-    (380, "Insert Delete GetRandom O(1)", ("design", "hash_map")),
     (981, "Time Based Key-Value Store", ("design", "binary_search")),
 ]
 
@@ -503,6 +511,16 @@ PROBLEMS = [
 # fresh Medium variations of core patterns. These are not a leaked question
 # list; they are transferable representatives of repeatedly reported skills.
 PROBLEMS += [
+    (930, "Binary Subarrays With Sum", ("array", "prefix", "hash_map")),
+    (1658, "Minimum Operations to Reduce X to Zero",
+     ("array", "sliding_window", "prefix")),
+    (1891, "Cutting Ribbons", ("binary_search", "binary_search_answer")),
+    (692, "Top K Frequent Words", ("string", "hash_map", "heap")),
+    (1834, "Single-Threaded CPU", ("heap", "sorting", "simulation")),
+    (1353, "Maximum Number of Events That Can Be Attended",
+     ("greedy", "heap", "intervals")),
+    (303, "Range Sum Query - Immutable", ("array", "prefix", "design")),
+    (724, "Find Pivot Index", ("array", "prefix")),
     (51, "N-Queens", ("backtracking", "hard")),
     (93, "Restore IP Addresses", ("backtracking", "string")),
     (126, "Word Ladder II", ("graph", "bfs", "backtracking", "hard")),
@@ -528,11 +546,11 @@ PROBLEMS += [
     (698, "Partition to K Equal Sum Subsets", ("backtracking", "dp")),
     (713, "Subarray Product Less Than K", ("sliding_window",)),
     (729, "My Calendar I", ("intervals", "binary_search", "design")),
-    (785, "Is Graph Bipartite?", ("graph", "bfs", "dfs")),
+    (785, "Is Graph Bipartite?", ("graph", "bfs", "dfs", "bipartite")),
     (815, "Bus Routes", ("graph", "bfs", "graph_modeling")),
     (827, "Making A Large Island", ("graph", "dfs", "union_find", "hard")),
     (847, "Shortest Path Visiting All Nodes", ("graph", "bfs", "state_search", "hard")),
-    (886, "Possible Bipartition", ("graph", "bfs", "dfs")),
+    (886, "Possible Bipartition", ("graph", "bfs", "dfs", "bipartite")),
     (934, "Shortest Bridge", ("graph", "bfs", "dfs", "multi_source_bfs")),
     (986, "Interval List Intersections", ("intervals", "two_pointers")),
     (1004, "Max Consecutive Ones III", ("sliding_window",)),
@@ -541,55 +559,126 @@ PROBLEMS += [
     (1095, "Find in Mountain Array", ("binary_search", "hard")),
     (1129, "Shortest Path with Alternating Colors", ("graph", "bfs", "state_search")),
     (1136, "Parallel Courses", ("graph", "topological_sort")),
+    (1135, "Connecting Cities With Minimum Cost",
+     ("graph", "mst", "union_find")),
     (1162, "As Far from Land as Possible", ("graph", "bfs", "multi_source_bfs")),
-    (1192, "Critical Connections in a Network", ("graph", "dfs", "hard")),
+    (1192, "Critical Connections in a Network",
+     ("graph", "dfs", "bridges", "tarjan", "hard")),
     (1584, "Min Cost to Connect All Points", ("graph", "mst", "union_find")),
     (1631, "Path With Minimum Effort",
      ("graph", "dijkstra", "binary_search_answer", "union_find")),
 ]
 
 
+# Google OA is deliberately narrower than the general interview curriculum.
+# Each four-problem cycle is A, A, G, O: two array/string representatives, one
+# graph representative, and one breadth problem. Historical attempts remain
+# eligible as cold reactivation; recent evidence is skipped by `learn`.
+GOOGLE_OA_ARRAY_STRING_TRACKS = [
+    "hashing", "two_pointers", "string_manipulation", "sliding_window",
+    "prefix_accumulation", "prefix_sum_hashmap", "matrix_simulation",
+]
+GOOGLE_OA_GRAPH_TRACKS = [
+    "graph_modeling", "topological_sort", "bfs_shortest_path",
+    "dfs_flood_fill", "multi_source_bfs", "bipartite_graph", "union_find",
+    "dijkstra", "state_space_search",
+]
+GOOGLE_OA_OTHER_TRACKS = [
+    "binary_search_answer", "heap_top_k", "heap_scheduling", "intervals",
+    "greedy", "stack", "monotonic_stack", "backtracking", "tree_dfs",
+    "tree_bfs", "dp_linear_take_skip", "dp_knapsack_coin_change",
+    "dp_two_sequence",
+]
+GOOGLE_OA_BUCKETS = {
+    "arrays_strings": GOOGLE_OA_ARRAY_STRING_TRACKS,
+    "graphs": GOOGLE_OA_GRAPH_TRACKS,
+    "other": GOOGLE_OA_OTHER_TRACKS,
+}
+GOOGLE_OA_WEIGHTS = {"arrays_strings": 0.50, "graphs": 0.25, "other": 0.25}
+
+GOOGLE_OA = [
+    # Cycles 1-4: highest-value recognition and transformations.
+    560, 904, 207, 875,
+    76, 930, 133, 973,
+    713, 1658, 785, 56,
+    525, 567, 815, 215,
+
+    # Cycles 5-8: stale alternatives replace very recent 41, 438, and 3.
+    128, 238, 934, 1891,
+    424, 49, 684, 621,
+    16, 15, 743, 39,
+    380, 242, 127, 322,
+
+    # Cycles 9-12: later core OA material.
+    11, 283, 210, 1011,
+    36, 48, 542, 739,
+    54, 73, 752, 253,
+    303, 724, 886, 435,
+
+    # Cycles 13-16: breadth without drifting into exotic algorithms.
+    217, 125, 547, 55,
+    205, 14, 721, 1353,
+    151, 443, 1129, 1834,
+    271, 209, 1162, 692,
+]
+
+
 # Ordered tracks are the heart of the trainer. Each list moves from the cleanest
 # version of a pattern to variants that force deeper recognition.
 TRACKS = {
-    "hashing": [1, 242, 49, 128, 380, 41],
-    "two_pointers": [125, 167, 283, 11, 15, 42],
-    "sliding_window": [209, 3, 1004, 904, 424, 438, 713, 567, 76],
-    "prefix_sum_hashmap": [238, 560, 525, 437],
+    "hashing": [1, 217, 242, 205, 49, 128, 380, 41],
+    "two_pointers": [125, 167, 283, 11, 15, 16, 287, 42],
+    "string_manipulation": [14, 151, 443, 271],
+    "sliding_window": [209, 3, 1004, 904, 713, 1658, 424, 438, 567, 76],
+    "prefix_accumulation": [238, 303, 724, 528],
+    "prefix_sum_hashmap": [560, 930, 525, 437],
+    "stack": [20, 150, 155, 1249],
     "monotonic_stack": [739, 853, 84, 907],
     "expression_stack": [394, 636, 224],
     "binary_search": [704, 69, 34, 74, 162, 658, 153, 33, 1095, 4],
-    "binary_search_answer": [875, 1011, 410],
-    "linked_list_pointers": [206, 21, 141, 19, 143, 138, 25],
+    "binary_search_answer": [875, 1891, 1011, 410],
+    "linked_list_pointers": [206, 21, 83, 141, 19, 2, 143, 138, 23, 25],
     "intervals": [56, 986, 57, 253, 435, 452],
-    "heap_top_k": [1046, 703, 215, 973, 347, 295],
-    "backtracking": [78, 46, 17, 39, 93, 40, 22, 79, 698, 51, 131],
-    "tree_dfs": [104, 98, 543, 236, 105, 124, 437, 297],
-    "tree_bfs": [102, 863],
+    "heap_top_k": [1046, 703, 215, 973, 347, 692, 295],
+    "heap_scheduling": [621, 1834, 1353],
+    "backtracking": [78, 90, 46, 47, 17, 39, 93, 40, 22, 79, 698, 51, 131],
+    "tree_dfs": [94, 104, 100, 101, 110, 112, 226, 98, 543, 572, 1448,
+                 236, 105, 114, 124, 437, 337, 297],
+    "tree_bfs": [102, 637, 199, 314, 863],
+    "bst": [700, 230, 222, 450],
     "dfs_flood_fill": [200, 695, 130, 417],
     "bfs_shortest_path": [994, 1091, 815, 127, 126],
     "multi_source_bfs": [994, 542, 934, 1162],
     "state_space_search": [433, 752, 1129, 847, 864],
     "topological_sort": [207, 210, 1136, 310, 269],
     "union_find": [547, 684, 323, 721, 827],
-    "dijkstra": [743, 1631, 787],
-    "graph_modeling": [133, 399, 277, 785, 886, 815, 332, 1192],
-    "grid_graph_advanced": [317, 827],
-    "minimum_spanning_tree": [684, 1584],
+    "dijkstra": [743, 1631],
+    "bounded_shortest_path": [787],
+    "graph_modeling": [133, 399, 277, 815],
+    "bipartite_graph": [785, 886],
+    "eulerian_path": [332],
+    "bridges_tarjan": [1192],
+    "grid_graph_advanced": [317, 827, 329],
+    "minimum_spanning_tree": [1135, 1584],
     "trie": [208, 211, 212],
     "stream_design": [359, 362, 281, 981, 146, 295],
     "weighted_random": [528],
     "geometry": [149],
-    "greedy": [121, 55, 45, 435, 134, 621],
+    "greedy": [53, 121, 122, 169, 55, 45, 334, 1353, 435, 134, 621, 767],
+    "bit_manipulation": [136, 191, 190, 268, 338, 371, 421],
+    "matrix_simulation": [36, 48, 54, 73],
     "dp_linear_take_skip": [70, 746, 198, 213, 740, 91],
     "dp_grid": [118, 119, 62, 64, 63, 120, 221],
     "dp_two_sequence": [392, 1143, 1035, 583, 712, 72, 115],
-    "dp_knapsack_coin_change": [322, 518, 377, 416, 494, 474, 1049],
+    "dp_knapsack_coin_change": [322, 279, 518, 377, 416, 494, 474, 1049],
     "dp_lis": [300, 646, 1048, 673],
-    "dp_interval_partition": [647, 5, 516, 139, 1039, 1547, 312],
+    "dp_palindrome": [647, 5, 516, 1312],
+    "dp_segmentation": [139],
+    "dp_interval_partition": [1039, 1547, 312],
     "dp_state_machine": [309, 714, 123, 188],
     "sweep_line_ordered_intervals": [986, 1094, 253, 729, 218],
     "google_priority_additions": [1631, 317, 827, 126, 253, 362, 1095, 149, 332, 1136],
+    "google_oa": GOOGLE_OA,
     "google_core": [
         200, 133, 994, 1091, 934, 815, 785, 207, 210, 684, 721, 743,
         1631, 752, 127,
@@ -602,30 +691,34 @@ TRACKS = {
 
 # Aggregate priority lists are selectable, but should not make every contained
 # family count as "begun" for the no-argument random mode.
-META_TRACKS = {"google_core", "google_priority_additions"}
+META_TRACKS = {"google_core", "google_priority_additions", "google_oa"}
 
 # Broad aliases preserve the narrow pattern taxonomy while making it convenient
 # to train a family. Order matters for `learn <group>` and acts as its roadmap.
 CATEGORY_GROUPS = {
     "dp": [
         "dp_linear_take_skip", "dp_grid", "dp_two_sequence",
-        "dp_knapsack_coin_change", "dp_lis", "dp_interval_partition",
-        "dp_state_machine",
+        "dp_knapsack_coin_change", "dp_lis", "dp_palindrome",
+        "dp_segmentation", "dp_interval_partition", "dp_state_machine",
     ],
     "graph": [
         "dfs_flood_fill", "bfs_shortest_path", "multi_source_bfs",
-        "graph_modeling", "grid_graph_advanced", "topological_sort",
-        "union_find", "dijkstra", "state_space_search",
-        "minimum_spanning_tree",
+        "graph_modeling", "bipartite_graph", "grid_graph_advanced",
+        "topological_sort", "union_find", "dijkstra",
+        "bounded_shortest_path", "state_space_search",
+        "minimum_spanning_tree", "eulerian_path", "bridges_tarjan",
     ],
-    "tree": ["tree_dfs", "tree_bfs"],
+    "tree": ["tree_dfs", "tree_bfs", "bst"],
+    "linked_list": ["linked_list_pointers"],
+    "stack_queue": ["stack", "monotonic_stack", "expression_stack"],
     # Convenience alias for the older tag name.
     "dp_knapsack": ["dp_knapsack_coin_change"],
     "binary_search_all": ["binary_search", "binary_search_answer"],
     "arrays_strings": [
-        "hashing", "two_pointers", "sliding_window", "prefix_sum_hashmap",
-        "monotonic_stack", "expression_stack", "intervals",
-        "sweep_line_ordered_intervals",
+        "hashing", "two_pointers", "string_manipulation", "sliding_window",
+        "prefix_accumulation", "prefix_sum_hashmap", "stack", "monotonic_stack",
+        "expression_stack", "intervals", "sweep_line_ordered_intervals",
+        "matrix_simulation", "bit_manipulation",
     ],
     "google_phase_1": [
         "dp_linear_take_skip", "dfs_flood_fill", "dp_grid",
@@ -634,7 +727,8 @@ CATEGORY_GROUPS = {
     ],
     "google_phase_2": [
         "tree_dfs", "tree_bfs", "topological_sort", "union_find",
-        "dijkstra", "state_space_search", "grid_graph_advanced",
+        "dijkstra", "bounded_shortest_path", "state_space_search",
+        "grid_graph_advanced", "bipartite_graph",
     ],
     "google_phase_3": [
         "sliding_window", "prefix_sum_hashmap", "hashing", "two_pointers",
@@ -642,27 +736,31 @@ CATEGORY_GROUPS = {
     ],
     "google_phase_4": [
         "trie", "backtracking", "binary_search_answer", "greedy",
-        "stream_design", "expression_stack", "weighted_random", "geometry",
+        "heap_scheduling", "stream_design", "expression_stack",
+        "weighted_random", "geometry",
     ],
     "google_phase_5": [
-        "dp_lis", "dp_interval_partition", "dp_state_machine",
+        "dp_lis", "dp_palindrome", "dp_segmentation",
+        "dp_interval_partition", "dp_state_machine",
         "minimum_spanning_tree", "monotonic_stack", "linked_list_pointers",
         "sweep_line_ordered_intervals",
     ],
 }
 
-UNSEEN, HINTED, SOLVED, MASTERED = range(4)
-STATUS_NAMES = ["UNSEEN", "HINTED", "SOLVED", "MASTERED"]
+UNSEEN, HINTED, SOLVED, MASTERED, PAST_ATTEMPTED = range(5)
+STATUS_NAMES = ["UNSEEN", "HINTED", "SOLVED", "MASTERED", "PAST_ATTEMPTED"]
 STATUS_VALUES = {name.lower(): value for value, name in enumerate(STATUS_NAMES)}
-# When multiple reviews are due, weaker evidence gets sampled more often.
-REDO_WEIGHTS = {UNSEEN: 6, HINTED: 5, SOLVED: 2, MASTERED: 1}
+# Stale historical evidence gets the highest review priority.
+REDO_WEIGHTS = {
+    UNSEEN: 6, HINTED: 5, SOLVED: 2, MASTERED: 1, PAST_ATTEMPTED: 7,
+}
 
 # LeetCode difficulty is intentionally separate from pattern tags. Problems not
 # listed here are Medium, which is the dominant interview-simulation tier.
 EASY_IDS = {
     1, 20, 21, 53, 69, 70, 83, 94, 100, 101, 104, 110, 112, 118,
     119, 121, 125, 136, 141, 169, 190, 191, 205, 206, 217, 226, 242,
-    268, 283, 338, 359, 392, 543, 572, 637, 700, 704, 746, 1046,
+    268, 283, 303, 338, 359, 392, 543, 572, 637, 700, 704, 724, 746, 1046,
 }
 HARD_IDS = {
     4, 23, 25, 42, 51, 72, 76, 84, 115, 124, 126, 127, 149, 188,
@@ -670,7 +768,9 @@ HARD_IDS = {
     847, 864, 1095, 1192, 1547,
 }
 DIFFICULTY_WEIGHTS = {"easy": 2, "medium": 6, "hard": 2}
-RANDOM_MASTERY_WEIGHTS = {UNSEEN: 4, HINTED: 3, SOLVED: 2, MASTERED: 1}
+RANDOM_MASTERY_WEIGHTS = {
+    UNSEEN: 4, HINTED: 3, SOLVED: 2, MASTERED: 1, PAST_ATTEMPTED: 4,
+}
 STATE_FILE = Path(__file__).with_name("leetcode_progress.json")
 
 # Old accepts are diagnostic evidence only. They enter redo; they do not start
@@ -681,9 +781,9 @@ DIAGNOSTICS = {
 }
 INITIAL_HINTED = {70, 118, 119, 392, 1143, 300, 62}
 
-# Historical Accepted submissions are not proof of mastery, but they should not
-# consume the ordered LEARN queue again. PRACTICE and REDO can still select them.
-HISTORICAL_SOLVED = {
+# Historical Accepted submissions are stale attempt evidence, not proof of
+# current mastery. They skip LEARN and receive high priority in REDO.
+HISTORICAL_ATTEMPTED = {
     1, 2, 3, 4, 5, 11, 15, 16, 17, 19, 20, 21, 22, 33, 34, 36, 39,
     42, 45, 46, 49, 53, 54, 55, 56, 57, 62, 64, 69, 70, 74, 78, 83,
     84, 94, 98, 100, 101, 102, 104, 105, 110, 112, 114, 118, 119, 121,
@@ -725,13 +825,22 @@ def _save(state):
 
 
 def _entry(state, lc):
-    return state["problems"].get(str(lc), {"status": UNSEEN, "attempts": 0})
+    entry = state["problems"].get(str(lc))
+    if lc in HISTORICAL_ATTEMPTED and (
+            entry is None or (entry.get("status") == UNSEEN and
+                              entry.get("attempts", 0) == 0)):
+        historical = dict(entry or {})
+        historical.update({"status": PAST_ATTEMPTED, "attempts": 1})
+        historical.setdefault("due", "1970-01-01T00:00:00+00:00")
+        historical.setdefault("history", [])
+        return historical
+    return entry or {"status": UNSEEN, "attempts": 0}
 
 
 def _slug(name):
-    return (name.lower().replace("'", "").replace("(", "")
-            .replace(")", "").replace(",", "").replace(".", "")
-            .replace(" ", "-"))
+    cleaned = (name.lower().replace("'", "").replace("(", "")
+               .replace(")", "").replace(",", "").replace(".", ""))
+    return re.sub(r"[^a-z0-9]+", "-", cleaned).strip("-")
 
 
 def difficulty(lc):
@@ -767,15 +876,24 @@ def learn(pattern):
 
     Any real attempt removes a problem from LEARN. HINTED attempts are revisited
     later by REDO instead of blocking access to new variations in the track.
+    Google OA learning additionally treats stale historical attempts as cold
+    reactivation candidates, while recent HINTED/SOLVED/MASTERED evidence skips
+    the problem. REDO scheduling remains independent of the OA bucket ratio.
     """
     tracks = _resolve_category(pattern)
     if not tracks:
         return _unknown_pattern(pattern)
     state = _load()
+    if pattern == "google_oa":
+        for lc in GOOGLE_OA:
+            if _entry(state, lc)["status"] in (UNSEEN, PAST_ATTEMPTED):
+                return format_problem(BY_ID[lc])
+        return ("google_oa: ordered learning and cold-reactivation queue "
+                "complete. Use practice or redo for additional reps.")
     for track in tracks:
         for lc in TRACKS[track]:
             status = _entry(state, lc)["status"]
-            if lc not in HISTORICAL_SOLVED and status == UNSEEN:
+            if status == UNSEEN:
                 return format_problem(BY_ID[lc], pattern=track)
     return (f"{pattern}: ordered learning queue complete. "
             "Use practice for pattern reps or redo for retention checks.")
@@ -789,7 +907,7 @@ def practice(pattern):
     state = _load()
     pool = sorted({lc for track in tracks for lc in TRACKS[track]})
     choices = [lc for lc in pool
-               if _entry(state, lc)["status"] < MASTERED]
+               if _entry(state, lc)["status"] != MASTERED]
     choices = choices or pool
     lc = random.choice(choices)
     return format_problem(BY_ID[lc], pattern=_track_for(lc, tracks))
@@ -822,9 +940,6 @@ def random_problem(patterns=None):
     for lc in pool:
         entry = _entry(state, lc)
         mastery_weight = RANDOM_MASTERY_WEIGHTS[entry["status"]]
-        # An old Accepted with no current evidence counts as seen, not brand-new.
-        if entry["status"] == UNSEEN and lc in HISTORICAL_SOLVED:
-            mastery_weight = RANDOM_MASTERY_WEIGHTS[SOLVED]
         weights.append(DIFFICULTY_WEIGHTS[difficulty(lc)] * mastery_weight)
     lc = random.choices(pool, weights=weights, k=1)[0]
     return format_problem(BY_ID[lc], reveal_pattern=False)
@@ -859,7 +974,7 @@ def redo(pattern=None, within=None):
         except ValueError as error:
             return str(error)
     ids = (sorted({lc for track in tracks for lc in TRACKS[track]}) if tracks else
-           list(DIAGNOSTICS | INITIAL_HINTED |
+           list(DIAGNOSTICS | INITIAL_HINTED | HISTORICAL_ATTEMPTED |
                 {int(lc) for lc in state["problems"]}))
     ids = [int(lc) for lc in ids if int(lc) in BY_ID]
     due = []
@@ -898,7 +1013,8 @@ def record(lc, status, follow_up=False):
     if lc not in BY_ID:
         return f"LC {lc} is not in the problem bank."
     if status not in STATUS_VALUES:
-        return "Status must be: hinted, solved, mastered, or unseen."
+        return ("Status must be: past_attempted, hinted, solved, mastered, "
+                "or unseen.")
     value, state, now = STATUS_VALUES[status], _load(), _utcnow()
     if value == MASTERED and not follow_up:
         return ("MASTERED requires one unseen follow-up. If you met all five "
@@ -911,7 +1027,8 @@ def record(lc, status, follow_up=False):
         hinted_delays = (3, 7, 14, 30)
         delay = hinted_delays[min(max(attempts - 1, 0), len(hinted_delays) - 1)]
     else:
-        delay = {UNSEEN: 0, SOLVED: 7, MASTERED: 21}[value]
+        delay = {UNSEEN: 0, SOLVED: 7, MASTERED: 21,
+                 PAST_ATTEMPTED: 0}[value]
     history = old.get("history", [])
     history.append({"status": value, "at": now.isoformat(),
                     "follow_up": bool(follow_up)})
@@ -927,11 +1044,12 @@ def progress():
     state = _load()
     lines = []
     for pattern, ids in TRACKS.items():
-        counts = [0, 0, 0, 0]
+        counts = [0] * len(STATUS_NAMES)
         for lc in ids:
             counts[_entry(state, lc)["status"]] += 1
+        labels = ("U", "H", "S", "M", "PAST")
         lines.append(f"{pattern:28} " + "  ".join(
-            f"{STATUS_NAMES[i][0]}:{counts[i]}" for i in range(4)))
+            f"{labels[i]}:{counts[i]}" for i in range(len(STATUS_NAMES))))
     return "\n".join(lines)
 
 
