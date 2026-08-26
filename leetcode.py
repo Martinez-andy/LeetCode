@@ -58,6 +58,7 @@ Daily loop:
   python3 leetcode.py record 209 hinted     # needed meaningful help
   python3 leetcode.py record 209 solved     # independent, but slow/difficult
   python3 leetcode.py record 209 mastered --follow-up
+  python3 leetcode.py record 9999 solved --name "External Problem"
   python3 leetcode.py practice sliding_window
   python3 leetcode.py random                # pattern intentionally hidden
   python3 leetcode.py redo                  # spaced failures/diagnostics
@@ -912,6 +913,24 @@ def format_problem(problem, reveal_pattern=False, pattern=None):
     return "\n".join(lines)
 
 
+def format_recorded_problem(lc, state):
+    """Format either a bank problem or an externally recorded LeetCode ID."""
+    if lc in BY_ID:
+        return format_problem(BY_ID[lc], reveal_pattern=False)
+    entry = state["problems"].get(str(lc), {})
+    name = entry.get("name")
+    lines = [f"LC {lc}" + (f" — {name}" if name else " — External problem")]
+    if entry.get("tags"):
+        lines.append(f"Tags: {', '.join(entry['tags'])}")
+    if entry.get("url"):
+        lines.append(entry["url"])
+    elif name:
+        lines.append(f"https://leetcode.com/problems/{_slug(name)}/")
+    else:
+        lines.append(f"https://leetcode.com/problemset/?search={lc}")
+    return "\n".join(lines)
+
+
 def _resolve_category(category):
     """Expand either one exact track or one broad category alias."""
     if category in TRACKS:
@@ -1021,7 +1040,9 @@ def redo(pattern=None, within=None):
     ids = (sorted({lc for track in tracks for lc in TRACKS[track]}) if tracks else
            list(DIAGNOSTICS | INITIAL_HINTED | HISTORICAL_ATTEMPTED |
                 {int(lc) for lc in state["problems"]}))
-    ids = [int(lc) for lc in ids if int(lc) in BY_ID]
+    # A scoped redo comes from a bank track. An unscoped redo also includes
+    # externally recorded IDs stored only in the progress JSON.
+    ids = [int(lc) for lc in ids if tracks is None or int(lc) in BY_ID]
     due = []
     for lc in ids:
         entry = _entry(state, lc)
@@ -1049,14 +1070,12 @@ def redo(pattern=None, within=None):
         k=1,
     )[0]
     return (format_problem(BY_ID[lc], pattern=_track_for(lc, tracks))
-            if tracks else format_problem(BY_ID[lc], reveal_pattern=False))
+            if tracks else format_recorded_problem(lc, state))
 
 
-def record(lc, status, follow_up=False):
-    """Record honest evidence; MASTERED additionally requires a follow-up."""
+def record(lc, status, follow_up=False, name=None, url=None, tags=None):
+    """Record bank or external evidence; MASTERED requires a follow-up."""
     status = status.lower()
-    if lc not in BY_ID:
-        return f"LC {lc} is not in the problem bank."
     if status not in STATUS_VALUES:
         return ("Status must be: past_attempted, hinted, solved, mastered, "
                 "or unseen.")
@@ -1077,12 +1096,23 @@ def record(lc, status, follow_up=False):
     history = old.get("history", [])
     history.append({"status": value, "at": now.isoformat(),
                     "follow_up": bool(follow_up)})
-    state["problems"][str(lc)] = {
+    updated_entry = {
         "status": value, "attempts": attempts, "updated": now.isoformat(),
         "due": (now + timedelta(days=delay)).isoformat(), "history": history,
     }
+    if lc not in BY_ID:
+        updated_entry["external"] = True
+        if name or old.get("name"):
+            updated_entry["name"] = name or old["name"]
+        if url or old.get("url"):
+            updated_entry["url"] = url or old["url"]
+        if tags or old.get("tags"):
+            updated_entry["tags"] = list(dict.fromkeys(tags or old["tags"]))
+    state["problems"][str(lc)] = updated_entry
     _save(state)
-    return f"LC {lc}: {STATUS_NAMES[value]} recorded; review in {delay} day(s)."
+    scope = " (external)" if lc not in BY_ID else ""
+    return (f"LC {lc}: {STATUS_NAMES[value]} recorded{scope}; "
+            f"review in {delay} day(s).")
 
 
 def progress():
@@ -1135,6 +1165,18 @@ def _main():
         "--follow-up", action="store_true",
         help="confirm an unseen follow-up was answered (required for MASTERED)",
     )
+    p.add_argument(
+        "--name",
+        help="title for an ID outside the problem bank",
+    )
+    p.add_argument(
+        "--url",
+        help="optional URL for an ID outside the problem bank",
+    )
+    p.add_argument(
+        "--tags", nargs="+",
+        help="pattern tags for an ID outside the problem bank",
+    )
     args = parser.parse_args()
     if args.command in ("learn", "practice"):
         result = globals()[args.command](args.pattern)
@@ -1143,7 +1185,10 @@ def _main():
     elif args.command == "random":
         result = random_problem(args.patterns)
     elif args.command == "record":
-        result = record(args.leetcode_id, args.status, args.follow_up)
+        result = record(
+            args.leetcode_id, args.status, args.follow_up, args.name, args.url,
+            args.tags,
+        )
     elif args.command == "progress":
         result = progress()
     else:
