@@ -633,33 +633,36 @@ GOOGLE_OA_BUCKETS = {
 GOOGLE_OA_WEIGHTS = {"arrays_strings": 0.50, "graphs": 0.25, "other": 0.25}
 
 GOOGLE_OA = [
-    # Cycles 1-4: core window/prefix recognition and graph modeling.
-    930, 76, 207, 1891,
-    713, 1658, 133, 1011,
-    523, 974, 785, 703,
-    1248, 1208, 815, 692,
+    # Cycles 1-4: current weak points — prefix counting, validity windows,
+    # weighted paths, multi-source BFS, and graph modeling.
+    523, 1208, 743, 1891,
+    974, 1493, 542, 1011,
+    1248, 2024, 399, 703,
+    1524, 2461, 934, 692,
 
-    # Cycles 5-8: fixed/variable windows, shortest paths, and scheduling.
-    1456, 1493, 934, 621,
-    2024, 2461, 684, 1834,
-    187, 299, 743, 1353,
-    811, 953, 127, 986,
+    # Cycles 5-8: keep pressure on transformations while interleaving more
+    # approachable fixed windows, hashing, two pointers, and graph modeling.
+    1658, 1456, 787, 621,
+    1838, 2352, 1162, 1834,
+    1657, 75, 1129, 1353,
+    953, 680, 815, 986,
 
-    # Cycles 9-12: hashing, two pointers, state search, and intervals/stacks.
-    1657, 2352, 210, 253,
-    75, 680, 542, 435,
-    844, 977, 752, 452,
-    289, 498, 886, 907,
+    # Cycles 9-12: consolidate hashing/two pointers and broaden graph fluency.
+    299, 844, 133, 253,
+    811, 977, 785, 435,
+    187, 289, 886, 452,
+    498, 48, 684, 907,
 
-    # Cycles 13-16: parsing/simulation plus representative backtracking and DP.
-    8, 43, 547, 79,
-    415, 468, 721, 90,
-    1524, 1838, 1129, 91,
-    48, 73, 1162, 322,
+    # Cycles 13-16: array/string simulation with DSU, BFS, backtracking, and DP.
+    73, 8, 547, 79,
+    43, 415, 721, 90,
+    468, 528, 127, 91,
+    437, 1572, 752, 322,
 
-    # Cycle 17 plus the closest possible 70-item allocation (35/18/17).
-    528, 437, 399, 416,
-    1572, 787,
+    # Attempted items sit late because LEARN skips them; REDO schedules their
+    # actual reinforcement. Allocation remains 35/18/17 across 70 IDs.
+    930, 76, 210, 416,
+    713, 207,
 ]
 
 GOOGLE_OA_REPEAT = [
