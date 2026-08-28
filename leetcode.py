@@ -46,6 +46,7 @@ Suggested daily mix while finishing DP:
 
 Broad category aliases are supported. Examples:
   python3 leetcode.py learn google_oa      # 50/25/25 OA roadmap (A/A/G/O)
+  python3 leetcode.py prioritize google_oa # adaptive fresh queue from recent work
   python3 leetcode.py redo google_oa_repeat  # due reviews from the OA repeat set
   python3 leetcode.py learn dp             # next fresh problem in DP roadmap
   python3 leetcode.py practice dp          # any DP track
@@ -945,6 +946,137 @@ def _track_for(lc, tracks):
     return next(track for track in tracks if lc in TRACKS[track])
 
 
+def _problem_tracks(lc):
+    """Return the narrow curriculum tracks containing a bank problem."""
+    return [track for track, ids in TRACKS.items()
+            if track not in META_TRACKS and lc in ids]
+
+
+def _recent_track_evidence(state, within):
+    """Summarize recent outcomes by narrow track for adaptive scheduling."""
+    now, cutoff = _utcnow(), _utcnow() - within
+    evidence = {}
+    outcome_scores = {HINTED: 6.0, SOLVED: -1.0, MASTERED: -3.0,
+                      PAST_ATTEMPTED: 2.0}
+    for raw_lc, entry in state["problems"].items():
+        lc = int(raw_lc)
+        if lc not in BY_ID:
+            continue
+        for event in entry.get("history", []):
+            try:
+                at = datetime.fromisoformat(event["at"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            if not cutoff <= at <= now:
+                continue
+            status = event.get("status", UNSEEN)
+            if status not in outcome_scores:
+                continue
+            age_fraction = (now - at) / within
+            recency = 1.0 - 0.5 * min(max(age_fraction, 0.0), 1.0)
+            for track in _problem_tracks(lc):
+                item = evidence.setdefault(
+                    track, {"score": 0.0, "hinted": 0, "solved": 0,
+                            "mastered": 0, "observations": 0})
+                item["score"] += outcome_scores[status] * recency
+                item["observations"] += 1
+                if status == HINTED:
+                    item["hinted"] += 1
+                elif status == SOLVED:
+                    item["solved"] += 1
+                elif status == MASTERED:
+                    item["mastered"] += 1
+    return evidence
+
+
+def _google_oa_bucket(lc):
+    """Recover the intentional A/A/G/O allocation from the curated ordering."""
+    index = GOOGLE_OA.index(lc)
+    if index < 68:
+        return ("arrays_strings", "arrays_strings", "graphs", "other")[index % 4]
+    return ("arrays_strings", "graphs")[index - 68]
+
+
+def prioritize(pattern="google_oa", limit=12, within="30d"):
+    """Display a balanced fresh queue ranked by recent weak-pattern evidence."""
+    tracks = _resolve_category(pattern)
+    if not tracks:
+        return _unknown_pattern(pattern)
+    if limit <= 0:
+        return "--limit must be a positive integer."
+    try:
+        window = _parse_duration(within)
+    except ValueError as error:
+        return str(error)
+
+    state = _load()
+    ordered = list(dict.fromkeys(
+        lc for track in tracks for lc in TRACKS[track]
+    ))
+    candidates = [lc for lc in ordered if _entry(state, lc)["status"] == UNSEEN]
+    if not candidates:
+        return (f"{pattern}: no unseen problems remain. Use redo for "
+                "retention checks.")
+    limit = min(limit, len(candidates))
+    evidence = _recent_track_evidence(state, window)
+
+    def rank(lc):
+        related = _problem_tracks(lc)
+        best = max((evidence.get(track, {}).get("score", 0.0) /
+                    max(evidence.get(track, {}).get("observations", 0), 1),
+                    track)
+                   for track in related) if related else (0.0, "breadth")
+        return (-best[0], ordered.index(lc), lc)
+
+    ranked = sorted(candidates, key=rank)
+    if pattern == "google_oa":
+        buckets = {name: [] for name in GOOGLE_OA_WEIGHTS}
+        for lc in ranked:
+            buckets[_google_oa_bucket(lc)].append(lc)
+        slots = ("arrays_strings", "arrays_strings", "graphs", "other")
+        selected = []
+        while len(selected) < limit:
+            added = False
+            for bucket in slots:
+                if len(selected) == limit:
+                    break
+                if buckets[bucket]:
+                    selected.append(buckets[bucket].pop(0))
+                    added = True
+            if not added:
+                break
+    else:
+        selected = ranked[:limit]
+
+    lines = [
+        f"Prioritized {pattern}: {len(selected)} unseen problem(s), "
+        f"using the last {within}",
+    ]
+    for number, lc in enumerate(selected, 1):
+        related = _problem_tracks(lc)
+        weak_track = max(
+            related,
+            key=lambda track: (
+                evidence.get(track, {}).get("score", 0.0) /
+                max(evidence.get(track, {}).get("observations", 0), 1)
+            ),
+            default="breadth",
+        )
+        item = evidence.get(weak_track, {})
+        if item.get("hinted", 0):
+            reason = (f"{weak_track}: {item['hinted']} hinted, "
+                      f"{item['solved']} solved recently")
+        elif item.get("solved", 0) or item.get("mastered", 0):
+            reason = f"{weak_track}: improving/reinforcement"
+        else:
+            reason = f"{weak_track}: breadth"
+        category = (f" [{_google_oa_bucket(lc)}]"
+                    if pattern == "google_oa" else "")
+        lines.append(f"{number:2}. LC {lc} — {BY_ID[lc][1]}{category}")
+        lines.append(f"    Why: {reason}")
+    return "\n".join(lines)
+
+
 def learn(pattern):
     """Return the next fresh problem in an ordered pattern progression.
 
@@ -1157,6 +1289,16 @@ def _main():
         "--within",
         help="override due dates and select recent attempts (7d, 1w, 1m)",
     )
+    p = sub.add_parser(
+        "prioritize",
+        help="rank unseen problems using recent weak-pattern evidence",
+    )
+    p.add_argument("pattern", nargs="?", default="google_oa")
+    p.add_argument("--limit", type=int, default=12)
+    p.add_argument(
+        "--within", default="30d",
+        help="recent performance window (default: 30d)",
+    )
     p = sub.add_parser("random")
     p.add_argument("patterns", nargs="*")
     sub.add_parser("progress")
@@ -1185,6 +1327,8 @@ def _main():
         result = globals()[args.command](args.pattern)
     elif args.command == "redo":
         result = redo(args.pattern, args.within)
+    elif args.command == "prioritize":
+        result = prioritize(args.pattern, args.limit, args.within)
     elif args.command == "random":
         result = random_problem(args.patterns)
     elif args.command == "record":
