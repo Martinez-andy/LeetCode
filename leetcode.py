@@ -63,6 +63,7 @@ Daily loop:
   python3 leetcode.py practice sliding_window
   python3 leetcode.py random                # pattern intentionally hidden
   python3 leetcode.py redo                  # spaced failures/diagnostics
+  python3 leetcode.py redo google_oa --status hinted  # hinted reviews only
   python3 leetcode.py redo --within 1w      # attempts from the last week
 
 Use `patterns` and `progress` to inspect the curriculum. Progress is stored in
@@ -550,7 +551,8 @@ PROBLEMS += [
     (930, "Binary Subarrays With Sum", ("array", "prefix", "hash_map")),
     (1658, "Minimum Operations to Reduce X to Zero",
      ("array", "sliding_window", "prefix")),
-    (1891, "Cutting Ribbons", ("binary_search", "binary_search_answer")),
+    (1760, "Minimum Limit of Balls in a Bag",
+     ("binary_search", "binary_search_answer")),
     (692, "Top K Frequent Words", ("string", "hash_map", "heap")),
     (1834, "Single-Threaded CPU", ("heap", "sorting", "simulation")),
     (1353, "Maximum Number of Events That Can Be Attended",
@@ -636,7 +638,7 @@ GOOGLE_OA_WEIGHTS = {"arrays_strings": 0.50, "graphs": 0.25, "other": 0.25}
 GOOGLE_OA = [
     # Cycles 1-4: current weak points — prefix counting, validity windows,
     # weighted paths, multi-source BFS, and graph modeling.
-    523, 1208, 743, 1891,
+    523, 1208, 743, 1760,
     974, 1493, 542, 1011,
     1248, 2024, 399, 703,
     1524, 2461, 934, 692,
@@ -688,7 +690,7 @@ TRACKS = {
     "monotonic_stack": [739, 853, 84, 907],
     "expression_stack": [394, 636, 224],
     "binary_search": [704, 69, 34, 74, 162, 658, 153, 33, 1095, 4],
-    "binary_search_answer": [875, 1891, 1011, 410],
+    "binary_search_answer": [875, 1760, 1011, 410],
     "linked_list_pointers": [206, 21, 83, 141, 19, 2, 143, 138, 23, 25],
     "intervals": [56, 986, 57, 253, 435, 452],
     "heap_top_k": [1046, 703, 215, 973, 347, 692, 295],
@@ -1157,16 +1159,21 @@ def _parse_duration(value):
     return timedelta(days=amount * multiplier)
 
 
-def redo(pattern=None, within=None):
+def redo(pattern=None, within=None, status=None):
     """Choose a review weighted toward lower mastery states.
 
     Normally only scheduled-due items qualify. `within` explicitly overrides
-    due dates and selects attempts made inside that recent window.
+    due dates and selects attempts made inside that recent window. `status`
+    restricts the result to one current mastery state.
     """
     tracks = _resolve_category(pattern) if pattern is not None else None
     if pattern is not None and not tracks:
         return _unknown_pattern(pattern)
     state, now = _load(), _utcnow()
+    status_value = STATUS_VALUES.get(status.lower()) if status else None
+    if status and status_value is None:
+        return ("Status must be: unseen, hinted, solved, mastered, or "
+                "past_attempted.")
     if within:
         try:
             cutoff = now - _parse_duration(within)
@@ -1181,6 +1188,8 @@ def redo(pattern=None, within=None):
     due = []
     for lc in ids:
         entry = _entry(state, lc)
+        if status_value is not None and entry["status"] != status_value:
+            continue
         if within:
             # Recency mode requires a real attempt, not an untouched diagnostic.
             if entry.get("attempts", 0) <= 0 or "updated" not in entry:
@@ -1194,10 +1203,13 @@ def redo(pattern=None, within=None):
             if is_review_item and due_at <= now:
                 due.append(lc)
     if not due:
+        status_scope = f" with status {status.upper()}" if status else ""
         if within:
             scope = f" in {pattern}" if pattern else ""
-            return f"No attempted problems found{scope} within the last {within}."
-        return "Nothing is due yet. Practice a track or use random."
+            return (f"No attempted problems found{scope}{status_scope} within "
+                    f"the last {within}.")
+        return (f"Nothing is due{status_scope}. Practice a track or use "
+                "random.")
     lc = random.choices(
         due,
         weights=[REDO_WEIGHTS[_entry(state, candidate)["status"]]
@@ -1289,6 +1301,10 @@ def _main():
         "--within",
         help="override due dates and select recent attempts (7d, 1w, 1m)",
     )
+    p.add_argument(
+        "--status", choices=sorted(STATUS_VALUES),
+        help="restrict reviews to one current mastery status",
+    )
     p = sub.add_parser(
         "prioritize",
         help="rank unseen problems using recent weak-pattern evidence",
@@ -1326,7 +1342,7 @@ def _main():
     if args.command in ("learn", "practice"):
         result = globals()[args.command](args.pattern)
     elif args.command == "redo":
-        result = redo(args.pattern, args.within)
+        result = redo(args.pattern, args.within, args.status)
     elif args.command == "prioritize":
         result = prioritize(args.pattern, args.limit, args.within)
     elif args.command == "random":
